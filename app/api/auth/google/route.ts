@@ -3,8 +3,10 @@ import User from "@/models/user.model";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import AppError from "@/utils/AppError";
+import connectDB from "@/db/connectDB";
 
 export const POST = async (req: NextRequest) => {
+  await connectDB();
   let { email, username, photo, password } = await req.json();
 
   const user = await User.findOne({ email });
