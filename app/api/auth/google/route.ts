@@ -26,6 +26,11 @@ export const POST = async (req: NextRequest) => {
       message: "user logged in successfully",
       status: "success",
       statusCode: 200,
+      user: {
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+      },
     });
     response.cookies.set("token", token, {
       httpOnly: true,
@@ -57,6 +62,11 @@ export const POST = async (req: NextRequest) => {
     message: "user created successfully",
     status: "success",
     statusCode: 201,
+    user: {
+      username: newUser.username,
+      email: newUser.email,
+      avatar: newUser.avatar,
+    },
   });
 
   response.cookies.set("token", token, {

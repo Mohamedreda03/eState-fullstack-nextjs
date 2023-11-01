@@ -6,8 +6,17 @@ interface InitialState {
   loading: boolean;
 }
 
+const storageUser = () => {
+  const user = localStorage.getItem("user") || null;
+  if (user) {
+    return JSON.parse(user);
+  } else {
+    return null;
+  }
+};
+
 const initialState: InitialState = {
-  currentUser: null,
+  currentUser: storageUser() || null,
   error: null,
   loading: false,
 };

@@ -5,8 +5,16 @@ import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 import { app } from "@/utils/firebase";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "@/features/userSlice";
 
 const GooglePtn = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state: any) => state.user);
   const router = useRouter();
   const handleGoogleClick = async () => {
     try {
@@ -19,10 +27,11 @@ const GooglePtn = () => {
         password: result.user.uid,
         photo: result.user.photoURL,
       });
-      console.log(data);
-
+      dispatch(signInSuccess(data.user));
+      window.localStorage.setItem("user", JSON.stringify(data.user));
       router.push("/");
-    } catch (error) {
+    } catch (error: any) {
+      dispatch(signInFailure(error.message));
       console.log(error);
     }
   };

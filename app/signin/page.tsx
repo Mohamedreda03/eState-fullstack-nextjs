@@ -1,17 +1,25 @@
 "use client";
 import GooglePtn from "@/components/GooglePtn";
+import {
+  signInFailure,
+  signInStart,
+  signInSuccess,
+} from "@/features/userSlice";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { type } from "os";
 import React from "react";
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
 const page = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state: any) => state.user);
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [resData, setresData] = useState("") as any;
+  console.log(user);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,11 +36,16 @@ const page = () => {
 
     const { data } = await axios.post("/api/auth/signin", dataUser);
 
+    dispatch(signInStart());
+
     if (data.status === "fail") {
       setresData(data);
+      dispatch(signInFailure(data.message));
     }
     if (data.status === "success") {
       setresData(data);
+      dispatch(signInSuccess(data.user));
+      window.localStorage.setItem("user", JSON.stringify(data.user));
       router.push("/");
     }
   };

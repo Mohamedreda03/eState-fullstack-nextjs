@@ -1,12 +1,16 @@
 "use client";
 import GooglePtn from "@/components/GooglePtn";
+import { signInFailure, signInSuccess } from "@/features/userSlice";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type } from "os";
 import React from "react";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 const page = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state: any) => state.user);
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -32,10 +36,13 @@ const page = () => {
 
     if (data.status === "fail") {
       setresData(data);
+      dispatch(signInFailure(data.message));
     }
 
     if (data.status === "success") {
       setresData(data);
+      dispatch(signInSuccess(data.user));
+      window.localStorage.setItem("user", JSON.stringify(data.user));
       router.push("/");
     }
   };
